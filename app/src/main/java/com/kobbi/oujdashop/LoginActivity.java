@@ -1,6 +1,8 @@
 package com.kobbi.oujdashop;
 
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +11,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class LoginActivity extends AppCompatActivity {
+
+    private EditText email, password;
+    private Button btnLogin, btnNewAccount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,5 +25,11 @@ public class LoginActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        email = findViewById(R.id.email);
+        password = findViewById(R.id.password);
+
+        btnLogin =  findViewById(R.id.btnLogin);
+        btnNewAccount = findViewById(R.id.btnNewAccount);
     }
 }
