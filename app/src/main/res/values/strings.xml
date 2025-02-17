@@ -9,4 +9,5 @@
     <string name="nom">Nom</string>
     <string name="prenom">Prénom</string>
     <string name="alreadyHaveAccount"><u>J\'ai déjà un compte</u></string>
+    <string name="rememberMe">Se souvenir de moi</string>
 </resources>

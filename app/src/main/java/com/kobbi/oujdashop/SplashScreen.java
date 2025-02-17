@@ -1,6 +1,7 @@
 package com.kobbi.oujdashop;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 
@@ -23,8 +24,15 @@ public class SplashScreen extends AppCompatActivity {
             return insets;
         });
 
+        SharedPreferences sharedPreferences = getSharedPreferences("login", MODE_PRIVATE);
+        boolean isLogin = sharedPreferences.getBoolean("isLogin", false);
         new Handler().postDelayed(() -> {
-            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            Intent intent;
+            if (isLogin) {
+                intent = new Intent(getApplicationContext(), MainActivity.class);
+            }else{
+                intent = new Intent(getApplicationContext(), LoginActivity.class);
+            }
             startActivity(intent);
             finish();
         }, 3000);
