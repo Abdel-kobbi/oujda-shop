@@ -53,7 +53,9 @@
                 android:layout_height="48dp"
                 android:autofillHints="emailAddress"
                 android:background="@drawable/input_style"
-                android:inputType="textEmailAddress" />
+                android:inputType="textEmailAddress"
+                android:hint="@string/email"
+                />
 
         </LinearLayout>
 
@@ -78,7 +80,9 @@
                 android:layout_height="48dp"
                 android:autofillHints="emailAddress"
                 android:background="@drawable/input_style"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:hint="@string/password"
+                />
         </LinearLayout>
 
         <LinearLayout

@@ -1,11 +1,12 @@
 <resources>
     <string name="app_name">Oujda Shop</string>
     <string name="login">Se connecter</string>
-    <string name="email">Email:</string>
-    <string name="password">Mot de passe:</string>
-    <string name="confirmPassword">Confirmation du mot de passe:</string>
+    <string name="email">Email</string>
+    <string name="password">Mot de passe</string>
+    <string name="confirmPassword">Confirmation du mot de passe</string>
     <string name="newAccount">Créer un compte</string>
     <string name="register">S\'inscrire</string>
-    <string name="nom">Nom:</string>
-    <string name="prenom">Prénom:</string>
+    <string name="nom">Nom</string>
+    <string name="prenom">Prénom</string>
+    <string name="alreadyHaveAccount"><u>J\'ai déjà un compte</u></string>
 </resources>
