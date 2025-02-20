@@ -10,4 +10,5 @@
     <string name="prenom">Prénom</string>
     <string name="alreadyHaveAccount"><u>J\'ai déjà un compte</u></string>
     <string name="rememberMe">Se souvenir de moi</string>
+    <string name="emptyListCategory">Aucune catégorie disponible</string>
 </resources>

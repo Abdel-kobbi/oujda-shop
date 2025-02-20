@@ -6,10 +6,16 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.kobbi.oujdashop.Models.Category;
 import com.kobbi.oujdashop.Models.User;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class Database extends SQLiteOpenHelper {
 
@@ -49,6 +55,7 @@ public class Database extends SQLiteOpenHelper {
     }
 
     // method to add new user
+
     /**
      * return true if the user is added
      * return false if email already exists
@@ -85,6 +92,27 @@ public class Database extends SQLiteOpenHelper {
         result.close();
         db.close();
         return user;
+    }
+
+    // find all categories
+
+    public List<Category> findAllCategories() {
+        List<Category> listCategories = new ArrayList<>();
+        try (SQLiteDatabase db = this.getReadableDatabase()) {
+            String sql = "SELECT * FROM " + TABLE_CATEGORY;
+            Cursor categories = db.rawQuery(sql, null);
+            while (categories.moveToNext()) {
+                listCategories.add(new Category(
+                        categories.getInt(0),
+                        categories.getString(1),
+                        categories.getString(2)
+                ));
+            }
+            categories.close();
+        } catch (Exception e) {
+            Log.d("Error", Objects.requireNonNull(e.getMessage()));
+        }
+        return listCategories;
     }
 
 
