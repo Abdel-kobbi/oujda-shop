@@ -14,6 +14,7 @@ import com.kobbi.oujdashop.Models.User;
 public class Database extends SQLiteOpenHelper {
 
     private final String TABLE_USER = "users";
+    private final String TABLE_CATEGORY = "categories";
 
 
     public Database(@Nullable Context context) {
@@ -22,24 +23,32 @@ public class Database extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String sql = "CREATE TABLE IF NOT EXISTS " + TABLE_USER + " (" +
+        // table users
+        String tableUser = "CREATE TABLE IF NOT EXISTS " + TABLE_USER + " (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "nom TEXT NOT NULL," +
                 "prenom TEXT NOT NULL," +
                 "email TEXT NOT NULL UNIQUE," +
                 "password TEXT NOT NULL);";
-        db.execSQL(sql);
+        db.execSQL(tableUser);
+        // table categories
+        String tableCategory = "CREATE TABLE IF NOT EXISTS " + TABLE_CATEGORY + " (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "nom TEXT NOT NULL," +
+                "description TEXT NOT NULL);";
+        db.execSQL(tableCategory);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        String sql = "DROP TABLE IF EXISTS " + TABLE_USER;
-        db.execSQL(sql);
+        String dropUser = "DROP TABLE IF EXISTS " + TABLE_USER;
+        db.execSQL(dropUser);
+        String dropCategory = "DROP TABLE IF EXISTS " + TABLE_CATEGORY;
+        db.execSQL(dropCategory);
         onCreate(db);
     }
 
     // method to add new user
-
     /**
      * return true if the user is added
      * return false if email already exists
@@ -59,6 +68,7 @@ public class Database extends SQLiteOpenHelper {
         }
     }
 
+    // method check if the user in the db
     public User authenticateUser(String email, String password) {
         User user = null;
         SQLiteDatabase db = this.getReadableDatabase();
