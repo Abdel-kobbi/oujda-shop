@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="15dp"
+    android:theme="@style/Color.Input.Alert">
+
+
+    <TextView
+        android:id="@+id/categoryNameLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:labelFor="@id/categoryName"
+        android:text="@string/categoryName"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/categoryName"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/input_style"
+        android:hint="@string/categoryName"
+        android:inputType="text" />
+
+    <TextView
+        android:id="@+id/categoryDescLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="10dp"
+        android:layout_marginBottom="10dp"
+        android:labelFor="@id/categoryDesc"
+        android:text="@string/categoryDesc"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/categoryDesc"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@drawable/input_style"
+        android:gravity="top"
+        android:hint="@string/categoryDesc"
+        android:inputType="text|textMultiLine" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:gravity="end"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="15dp"
+            android:text="@string/cancel" />
+
+        <Button
+            android:id="@+id/btnAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:text="@string/add" />
+    </LinearLayout>
+
+</LinearLayout>

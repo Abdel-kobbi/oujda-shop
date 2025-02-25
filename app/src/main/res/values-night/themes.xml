@@ -5,4 +5,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
     </style>
+    <style name="Color.Input.Alert" parent="Theme.OujdaShop">
+        <item name="android:textColor">@color/black</item>
+    </style>
 </resources>

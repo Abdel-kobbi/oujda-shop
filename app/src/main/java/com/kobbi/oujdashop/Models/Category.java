@@ -1,11 +1,16 @@
 package com.kobbi.oujdashop.Models;
 
 public class Category {
-    private final int id;
+    private int id;
     private String name, description;
 
     public Category(int id, String name, String description) {
         this.id = id;
+        this.name = name;
+        this.description = description;
+    }
+
+    public Category(String name, String description) {
         this.name = name;
         this.description = description;
     }

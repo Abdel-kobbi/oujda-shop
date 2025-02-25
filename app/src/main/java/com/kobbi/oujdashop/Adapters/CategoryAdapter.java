@@ -1,4 +1,4 @@
-package com.kobbi.oujdashop;
+package com.kobbi.oujdashop.Adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.kobbi.oujdashop.Models.Category;
+import com.kobbi.oujdashop.R;
 
 import java.util.List;
 

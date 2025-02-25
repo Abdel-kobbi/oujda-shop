@@ -11,4 +11,9 @@
     <string name="alreadyHaveAccount"><u>J\'ai déjà un compte</u></string>
     <string name="rememberMe">Se souvenir de moi</string>
     <string name="emptyListCategory">Aucune catégorie disponible</string>
+    <string name="add">Ajouter</string>
+    <string name="profile">Profil</string>
+    <string name="categoryName">Nom</string>
+    <string name="categoryDesc">Description</string>
+    <string name="cancel">Annuler</string>
 </resources>

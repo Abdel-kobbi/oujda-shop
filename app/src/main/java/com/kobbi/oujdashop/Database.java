@@ -115,5 +115,19 @@ public class Database extends SQLiteOpenHelper {
         return listCategories;
     }
 
+    public boolean addCategory(Category category) {
+        try (SQLiteDatabase db = this.getWritableDatabase()) {
+
+            ContentValues values = new ContentValues();
+            values.put("nom", category.getName());
+            values.put("description", category.getDescription());
+            db.insertOrThrow(TABLE_CATEGORY, null, values);
+            return true;
+        } catch (SQLiteConstraintException e) {
+            return false;
+        }
+    }
+
+
 
 }
