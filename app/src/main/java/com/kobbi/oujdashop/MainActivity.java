@@ -1,6 +1,8 @@
 package com.kobbi.oujdashop;
 
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextThemeWrapper;
@@ -83,6 +85,14 @@ public class MainActivity extends AppCompatActivity {
             return true;
         } else if (item.getItemId() == R.id.profile) {
             // navigate to profile activity
+            return true;
+        } else if (item.getItemId() == R.id.logout) {
+            // logout and navigate to login activity
+            SharedPreferences sharedPreferences = getSharedPreferences("isLogin", MODE_PRIVATE);
+            sharedPreferences.edit().clear().apply();
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+            finish();
             return true;
         } else {
             return super.onOptionsItemSelected(item);

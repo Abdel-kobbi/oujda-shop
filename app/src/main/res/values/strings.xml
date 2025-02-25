@@ -18,4 +18,5 @@
     <string name="cancel">Annuler</string>
     <string name="update">Modifier</string>
     <string name="delete">Supprimer</string>
+    <string name="logout">Se déconnecter</string>
 </resources>

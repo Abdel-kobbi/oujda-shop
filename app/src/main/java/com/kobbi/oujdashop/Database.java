@@ -55,7 +55,6 @@ public class Database extends SQLiteOpenHelper {
     }
 
     // method to add new user
-
     /**
      * return true if the user is added
      * return false if email already exists
