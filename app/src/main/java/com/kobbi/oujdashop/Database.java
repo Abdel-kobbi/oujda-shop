@@ -128,6 +128,24 @@ public class Database extends SQLiteOpenHelper {
         }
     }
 
+    public boolean updateCategory(Category category) {
+        try (SQLiteDatabase db = this.getWritableDatabase()) {
+            ContentValues values = new ContentValues();
+            values.put("nom", category.getName());
+            values.put("description", category.getDescription());
+            db.update(TABLE_CATEGORY, values, "id = ?", new String[]{String.valueOf(category.getId())});
+            return true;
+        } catch (SQLiteConstraintException e) {
+            return false;
+        }
+    }
 
-
+    public boolean deleteCategory(int id) {
+        try (SQLiteDatabase db = this.getWritableDatabase()) {
+            db.delete(TABLE_CATEGORY, "id = ?", new String[]{String.valueOf(id)});
+            return true;
+        } catch (SQLiteConstraintException e) {
+            return false;
+        }
+    }
 }

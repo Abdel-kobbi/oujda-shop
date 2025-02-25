@@ -16,4 +16,6 @@
     <string name="categoryName">Nom</string>
     <string name="categoryDesc">Description</string>
     <string name="cancel">Annuler</string>
+    <string name="update">Modifier</string>
+    <string name="delete">Supprimer</string>
 </resources>

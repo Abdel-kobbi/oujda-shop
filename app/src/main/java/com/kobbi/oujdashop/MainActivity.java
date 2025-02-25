@@ -2,10 +2,10 @@ package com.kobbi.oujdashop;
 
 
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -18,7 +18,6 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -57,10 +56,12 @@ public class MainActivity extends AppCompatActivity {
         db = new Database(getApplicationContext());
 
         listViewCategory = findViewById(R.id.listCategory);
+
+        registerForContextMenu(listViewCategory);
+
         // to display message if the list is empty
         listViewCategory.setEmptyView(findViewById(R.id.emptyListCategory));
         loadCategories();
-
     }
 
     private void loadCategories() {
@@ -86,9 +87,106 @@ public class MainActivity extends AppCompatActivity {
         } else {
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        getMenuInflater().inflate(R.menu.context_menu_category, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        Category category = categoryList.get(info.position);
+        int itemSelected = item.getItemId();
+        if (itemSelected == R.id.update) {
+            showUpdateCategoryDialog(category);
+            return true;
+        } else if (itemSelected == R.id.delete) {
+            showConfirmDeleteDialog(category);
+            return true;
+        } else {
+            return super.onContextItemSelected(item);
+        }
+    }
+
+    // dialog for update category;
+    private void showUpdateCategoryDialog(Category category) {
+        AlertDialog.Builder builderAlert = new AlertDialog.Builder(new ContextThemeWrapper(this, androidx.appcompat.R.style.Theme_AppCompat_Dialog_Alert));
+        AlertDialog alertDialog = builderAlert.create();
+        alertDialog.setTitle("Modifier catégorie");
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.add_category_layout, null);
+        alertDialog.setView(dialogView);
+
+        EditText categoryName = dialogView.findViewById(R.id.categoryName);
+        EditText categoryDesc = dialogView.findViewById(R.id.categoryDesc);
+
+        Button btnAdd = dialogView.findViewById(R.id.btnAdd);
+        // change Value of btn
+        btnAdd.setText("Modifier");
+
+        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
+
+        // add the old value
+
+        categoryName.setText(category.getName());
+        categoryDesc.setText(category.getDescription());
+
+        btnAdd.setOnClickListener(v -> {
+            String name = categoryName.getText().toString();
+            String desc = categoryDesc.getText().toString();
+            if (name.isEmpty() || desc.isEmpty()) {
+                Toast.makeText(getApplicationContext(), "Tous les champs sont obligatoire!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            // update category
+            category.setName(name);
+            category.setDescription(desc);
+
+            boolean isUpdated = db.updateCategory(category);
+            if (isUpdated) {
+                alertDialog.dismiss();
+                Snackbar.make(findViewById(R.id.categoryLayout), "La catégorie '" + name + "' a été modifier avec succès.", Snackbar.LENGTH_LONG).show();
+                loadCategories();
+            } else {
+                Snackbar.make(findViewById(R.id.categoryLayout), "Échec de modifier, Veuillez réessayer.", Snackbar.LENGTH_LONG).show();
+            }
+        });
+
+        btnCancel.setOnClickListener(v -> {
+            alertDialog.dismiss();
+        });
+
+        alertDialog.show();
 
     }
 
+    // dialog for confirm delete category
+    private void showConfirmDeleteDialog(Category category) {
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, androidx.appcompat.R.style.Theme_AppCompat_Dialog_Alert));
+
+        alertBuilder.setTitle("Confirmation");
+
+        alertBuilder.setMessage("Êtes-vous sûr de vouloir supprimer cette catégorie ?");
+
+        alertBuilder.setPositiveButton("Supprimer", (dialog, which) -> {
+            boolean isDeleted = db.deleteCategory(category.getId());
+            if (isDeleted) {
+                Snackbar.make(findViewById(R.id.categoryLayout), "La catégorie  a été supprimer avec succès.", Snackbar.LENGTH_LONG).show();
+                loadCategories();
+            } else {
+                Snackbar.make(findViewById(R.id.categoryLayout), "Échec de suppression, Veuillez réessayer.", Snackbar.LENGTH_LONG).show();
+            }
+        });
+
+        alertBuilder.setNegativeButton("Annuler", (dialog, which) -> dialog.dismiss());
+
+        alertBuilder.show();
+    }
+
+    // dialog for add new category
     private void showAddCategoryDialog() {
         AlertDialog.Builder builderAlert = new AlertDialog.Builder(new ContextThemeWrapper(this, androidx.appcompat.R.style.Theme_AppCompat_Dialog_Alert));
         AlertDialog alertDialog = builderAlert.create();
@@ -125,8 +223,6 @@ public class MainActivity extends AppCompatActivity {
             alertDialog.dismiss();
         });
 
-
         alertDialog.show();
-
     }
 }
