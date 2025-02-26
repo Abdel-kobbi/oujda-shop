@@ -24,9 +24,9 @@
         android:id="@+id/emptyListCategory"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         android:text="@string/emptyListCategory"
-        android:textSize="25sp"
         android:textAlignment="center"
-        android:layout_centerVertical="true"/>
+        android:textSize="25sp" />
 
 </RelativeLayout>

@@ -1,6 +1,8 @@
 package com.kobbi.oujdashop.Models;
 
-public class Product {
+import java.io.Serializable;
+
+public class Product implements Serializable {
     private int id;
     private String name, description;
     private double price;

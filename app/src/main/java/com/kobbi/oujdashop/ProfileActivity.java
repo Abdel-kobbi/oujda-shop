@@ -191,7 +191,7 @@ public class ProfileActivity extends AppCompatActivity {
             return true;
         } else if (item.getItemId() == R.id.logout) {
             // logout and navigate to login activity
-            SharedPreferences sharedPreferences = getSharedPreferences("isLogin", MODE_PRIVATE);
+            SharedPreferences sharedPreferences = getSharedPreferences("login", MODE_PRIVATE);
             sharedPreferences.edit().clear().apply();
             intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);

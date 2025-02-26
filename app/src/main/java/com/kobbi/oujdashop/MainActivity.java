@@ -31,6 +31,7 @@ import com.kobbi.oujdashop.Database.Database;
 import com.kobbi.oujdashop.Models.Category;
 
 import java.util.List;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -54,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
         // add toolbar to main activity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Liste des categories");
 
         // get connection db
         db = new Database(getApplicationContext());
@@ -98,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         } else if (item.getItemId() == R.id.logout) {
             // logout and navigate to login activity
-            SharedPreferences sharedPreferences = getSharedPreferences("isLogin", MODE_PRIVATE);
+            SharedPreferences sharedPreferences = getSharedPreferences("login", MODE_PRIVATE);
             sharedPreferences.edit().clear().apply();
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);

@@ -19,6 +19,7 @@ public class CategoryAdapter extends ArrayAdapter<Category> {
 
     private final Context context;
     private final int resource;
+
     public CategoryAdapter(@NonNull Context context, int resource, @NonNull List<Category> categories) {
         super(context, resource, categories);
         this.context = context;
@@ -32,7 +33,7 @@ public class CategoryAdapter extends ArrayAdapter<Category> {
         TextView categoryName = (TextView) convertView.findViewById(R.id.title);
         TextView categoryDesc = (TextView) convertView.findViewById(R.id.description);
         Category currentCategory = getItem(position);
-        String name = currentCategory.getName().substring(0,1).toUpperCase() + currentCategory.getName().substring(1).toLowerCase();
+        String name = currentCategory.getName().substring(0, 1).toUpperCase() + currentCategory.getName().substring(1).toLowerCase();
         categoryName.setText(name);
         categoryDesc.setText(currentCategory.getDescription());
         return convertView;

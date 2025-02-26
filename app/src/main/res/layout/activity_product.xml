@@ -20,10 +20,10 @@
         android:layout_height="match_parent"
         android:layout_below="@id/included"
         android:gravity="center"
-        android:numColumns="3"
-        android:stretchMode="columnWidth"
-        android:padding="10dp"
         android:horizontalSpacing="5dp"
+        android:numColumns="3"
+        android:padding="10dp"
+        android:stretchMode="columnWidth"
         android:verticalSpacing="10dp" />
 
     <TextView

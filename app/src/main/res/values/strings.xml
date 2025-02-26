@@ -27,4 +27,5 @@
     <string name="listCategories">Catégories</string>
     <string name="productName">Nom du produit</string>
     <string name="productPrice">Prix : 00.00 DH</string>
+    <string name="addToFavorites">Ajouter aux favoris</string>
 </resources>

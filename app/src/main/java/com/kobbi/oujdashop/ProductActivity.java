@@ -29,6 +29,7 @@ import com.kobbi.oujdashop.Models.Category;
 import com.kobbi.oujdashop.Models.Product;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ProductActivity extends AppCompatActivity {
 
@@ -37,6 +38,8 @@ public class ProductActivity extends AppCompatActivity {
     private Database db;
 
     private Category categoryProduct;
+
+    List<Product> products;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +55,9 @@ public class ProductActivity extends AppCompatActivity {
         // add toolbar to product activity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Liste des produits");
+
 
         db = new Database(getApplicationContext());
 
@@ -70,10 +76,18 @@ public class ProductActivity extends AppCompatActivity {
         }
 
         loadProduct();
+
+        gridViewProduct.setOnItemClickListener((parent, view, position, id) -> {
+            Product selectedProduct = products.get(position);
+            Intent intent = new Intent(getApplicationContext(), DetailsActivity.class);
+            intent.putExtra("product", selectedProduct);
+            startActivity(intent);
+        });
+
     }
 
     private void loadProduct() {
-        List<Product> products = db.getProductBuCategory(categoryProduct);
+        products = db.getProductBuCategory(categoryProduct);
         ProductAdapter adapter = new ProductAdapter(getApplicationContext(), R.layout.item_product, products);
         gridViewProduct.setAdapter(adapter);
     }
@@ -97,7 +111,7 @@ public class ProductActivity extends AppCompatActivity {
             return true;
         } else if (item.getItemId() == R.id.logout) {
             // logout and navigate to login activity
-            SharedPreferences sharedPreferences = getSharedPreferences("isLogin", MODE_PRIVATE);
+            SharedPreferences sharedPreferences = getSharedPreferences("login", MODE_PRIVATE);
             sharedPreferences.edit().clear().apply();
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
@@ -148,9 +162,7 @@ public class ProductActivity extends AppCompatActivity {
             }
         });
 
-        btnCancel.setOnClickListener(v -> {
-            alertDialog.dismiss();
-        });
+        btnCancel.setOnClickListener(v -> alertDialog.dismiss());
 
         alertDialog.show();
     }
