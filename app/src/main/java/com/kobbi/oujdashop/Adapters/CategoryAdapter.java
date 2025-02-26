@@ -17,8 +17,8 @@ import java.util.List;
 
 public class CategoryAdapter extends ArrayAdapter<Category> {
 
-    private Context context;
-    private int resource;
+    private final Context context;
+    private final int resource;
     public CategoryAdapter(@NonNull Context context, int resource, @NonNull List<Category> categories) {
         super(context, resource, categories);
         this.context = context;

@@ -17,10 +17,10 @@ import java.util.List;
 
 public class ProductAdapter extends ArrayAdapter<Product> {
 
-    private Context context;
-    private int resource;
+    private final Context context;
+    private final int resource;
 
-    public ProductAdapter(@NonNull Context context, int resource, @NonNull List<Product> products){
+    public ProductAdapter(@NonNull Context context, int resource, @NonNull List<Product> products) {
         super(context, resource, products);
         this.context = context;
         this.resource = resource;
@@ -28,10 +28,10 @@ public class ProductAdapter extends ArrayAdapter<Product> {
 
     @NonNull
     @Override
-    public View getView ( int position, @Nullable View convertView, @NonNull ViewGroup parent){
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         convertView = LayoutInflater.from(context).inflate(resource, parent, false);
         TextView productName = (TextView) convertView.findViewById(R.id.productName);
-        TextView productPrice = (TextView) convertView.findViewById(R.id.productName);
+        TextView productPrice = (TextView) convertView.findViewById(R.id.productPrice);
         Product currentProduct = getItem(position);
         String name = currentProduct.getName().substring(0, 1).toUpperCase() + currentProduct.getName().substring(1).toLowerCase();
         productName.setText(name);

@@ -27,6 +27,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.kobbi.oujdashop.Adapters.CategoryAdapter;
+import com.kobbi.oujdashop.Database.Database;
 import com.kobbi.oujdashop.Models.Category;
 
 import java.util.List;

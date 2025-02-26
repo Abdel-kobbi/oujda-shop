@@ -1,4 +1,4 @@
-package com.kobbi.oujdashop;
+package com.kobbi.oujdashop.Database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -31,6 +31,9 @@ public class Database extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        // enable foreign key
+        db.execSQL("PRAGMA foreign_keys = ON;");
+
         // table users
         String tableUser = "CREATE TABLE IF NOT EXISTS " + TABLE_USER + " (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -45,10 +48,11 @@ public class Database extends SQLiteOpenHelper {
                 "nom TEXT NOT NULL," +
                 "description TEXT NOT NULL);";
         db.execSQL(tableCategory);
+        // table products
         String tableProduct = "CREATE TABLE IF NOT EXISTS " + TABLE_PRODUCT + " (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "nom TEXT NOT NULL," +
-                "price REAL," +
+                "price REAL NOT NULL," +
                 "description TEXT NOT NULL," +
                 "category_id INTEGER," +
                 "FOREIGN KEY (category_id) REFERENCES " + TABLE_CATEGORY + "(id));";
@@ -62,7 +66,7 @@ public class Database extends SQLiteOpenHelper {
         String dropCategory = "DROP TABLE IF EXISTS " + TABLE_CATEGORY;
         db.execSQL(dropCategory);
         String dropProduct = "DROP TABLE IF EXISTS " + TABLE_PRODUCT;
-        db.execSQL(dropCategory);
+        db.execSQL(dropProduct);
         onCreate(db);
     }
 
@@ -200,9 +204,9 @@ public class Database extends SQLiteOpenHelper {
             while (cursor.moveToNext()) {
                 products.add(new Product(
                         cursor.getInt(0),
-                        cursor.getString(2),
-                        cursor.getDouble(1),
-                        cursor.getString(2),
+                        cursor.getString(1),
+                        cursor.getDouble(2),
+                        cursor.getString(3),
                         category
                 ));
             }
@@ -211,5 +215,19 @@ public class Database extends SQLiteOpenHelper {
             Log.d("Error", Objects.requireNonNull(e.getMessage()));
         }
         return products;
+    }
+
+    public boolean addProduct(Product product) {
+        try (SQLiteDatabase db = this.getWritableDatabase()) {
+            ContentValues values = new ContentValues();
+            values.put("nom", product.getName());
+            values.put("price", product.getPrice());
+            values.put("description", product.getDescription());
+            values.put("category_id", product.getCategory().getId());
+            db.insertOrThrow(TABLE_PRODUCT, null, values);
+            return true;
+        } catch (SQLiteConstraintException e) {
+            return false;
+        }
     }
 }

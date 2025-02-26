@@ -3,19 +3,28 @@ package com.kobbi.oujdashop;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.ContextThemeWrapper;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.kobbi.oujdashop.Adapters.ProductAdapter;
+import com.kobbi.oujdashop.Database.Database;
 import com.kobbi.oujdashop.Models.Category;
 import com.kobbi.oujdashop.Models.Product;
 
@@ -100,5 +109,58 @@ public class ProductActivity extends AppCompatActivity {
     }
 
     private void showAddProductDialog() {
+        AlertDialog.Builder builderAlert = new AlertDialog.Builder(new ContextThemeWrapper(this, androidx.appcompat.R.style.Theme_AppCompat_Dialog_Alert));
+        AlertDialog alertDialog = builderAlert.create();
+        alertDialog.setTitle("Ajouter produit");
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.add_product_layout, null);
+        alertDialog.setView(dialogView);
+
+        EditText productName = dialogView.findViewById(R.id.productName);
+        EditText productPrice = dialogView.findViewById(R.id.productPrice);
+        EditText productDesc = dialogView.findViewById(R.id.productDesc);
+
+        Button btnAdd = dialogView.findViewById(R.id.btnAdd);
+        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
+
+
+        btnAdd.setOnClickListener(v -> {
+            String name = productName.getText().toString().trim();
+            String price = productPrice.getText().toString().trim();
+            String desc = productDesc.getText().toString().trim();
+            if (name.isEmpty() || desc.isEmpty() || price.isEmpty()) {
+                Toast.makeText(getApplicationContext(), "Tous les champs sont obligatoire!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (!isDouble(price)) {
+                Toast.makeText(getApplicationContext(), "Le prix doit être un nombre réelle!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            boolean isAdded = db.addProduct(new Product(name, Double.parseDouble(price), desc, categoryProduct));
+            if (isAdded) {
+                alertDialog.dismiss();
+                Snackbar.make(findViewById(R.id.productLayout), "La produit '" + name + "' a été ajoutée avec succès.", Snackbar.LENGTH_LONG).show();
+                loadProduct();
+            } else {
+                Snackbar.make(findViewById(R.id.productLayout), "Échec de l'ajout, Veuillez réessayer.", Snackbar.LENGTH_LONG).show();
+            }
+        });
+
+        btnCancel.setOnClickListener(v -> {
+            alertDialog.dismiss();
+        });
+
+        alertDialog.show();
+    }
+
+    private boolean isDouble(String value) {
+        try {
+            Double.parseDouble(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

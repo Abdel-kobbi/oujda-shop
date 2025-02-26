@@ -9,15 +9,15 @@ public class Product {
     public Product(int id, String name, double price, String description, Category category) {
         this.id = id;
         this.name = name;
-        this.description = description;
         this.price = price;
+        this.description = description;
         this.category = category;
     }
 
     public Product(String name, double price, String description, Category category) {
         this.name = name;
-        this.description = description;
         this.price = price;
+        this.description = description;
         this.category = category;
     }
 
