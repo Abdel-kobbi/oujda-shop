@@ -85,6 +85,8 @@ public class MainActivity extends AppCompatActivity {
             return true;
         } else if (item.getItemId() == R.id.profile) {
             // navigate to profile activity
+            Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+            startActivity(intent);
             return true;
         } else if (item.getItemId() == R.id.logout) {
             // logout and navigate to login activity
@@ -99,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // context menu for update or delete category
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);

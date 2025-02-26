@@ -19,4 +19,9 @@
     <string name="update">Modifier</string>
     <string name="delete">Supprimer</string>
     <string name="logout">Se déconnecter</string>
+    <string name="updatePassword">Modifier password</string>
+    <string name="currentPassword">Mot de passe actuel</string>
+    <string name="newPassword">Nouveau mot de passe</string>
+    <string name="confirmNewPassword">Confirmer le nouveau mot de passe</string>
+    <string name="listCategories">Catégories</string>
 </resources>

@@ -55,6 +55,7 @@ public class Database extends SQLiteOpenHelper {
     }
 
     // method to add new user
+
     /**
      * return true if the user is added
      * return false if email already exists
@@ -93,8 +94,39 @@ public class Database extends SQLiteOpenHelper {
         return user;
     }
 
-    // find all categories
+    // method to find user
+    public User findUser(int id) {
+        User user = null;
+        SQLiteDatabase db = this.getReadableDatabase();
+        String sql = "SELECT * FROM " + TABLE_USER + " WHERE id = ?;";
+        Cursor result = db.rawQuery(sql, new String[]{String.valueOf(id)});
+        if (result.moveToFirst()) {
+            user = new User(result.getInt(0),
+                    result.getString(1),
+                    result.getString(2),
+                    result.getString(3),
+                    result.getString(4)
+            );
+        }
+        result.close();
+        db.close();
+        return user;
+    }
 
+    public boolean updateUser(User user) {
+        try (SQLiteDatabase db = this.getWritableDatabase()) {
+            ContentValues values = new ContentValues();
+            values.put("nom", user.getNom());
+            values.put("prenom", user.getPrenom());
+            values.put("password", user.getPassword());
+            db.update(TABLE_USER, values, "id = ?", new String[]{String.valueOf(user.getId())});
+            return true;
+        } catch (SQLiteConstraintException e) {
+            return false;
+        }
+    }
+
+    // find all categories
     public List<Category> findAllCategories() {
         List<Category> listCategories = new ArrayList<>();
         try (SQLiteDatabase db = this.getReadableDatabase()) {
