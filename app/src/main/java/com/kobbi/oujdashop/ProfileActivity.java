@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -23,7 +22,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.kobbi.oujdashop.Models.Category;
 import com.kobbi.oujdashop.Models.User;
 
 import java.util.Objects;
@@ -48,7 +46,7 @@ public class ProfileActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        // add toolbar to main activity
+        // add toolbar to profile activity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -103,6 +101,8 @@ public class ProfileActivity extends AppCompatActivity {
 
             boolean isUpdated = db.updateUser(user);
             if (isUpdated) {
+                String userFullName = user.getNom().toUpperCase() + " " + user.getPrenom();
+                fullName.setText(userFullName);
                 Snackbar.make(findViewById(R.id.profileLayout), "Votre profile a été modifier avec succès.", Snackbar.LENGTH_LONG).show();
             } else {
                 Snackbar.make(findViewById(R.id.profileLayout), "Échec de modifier, Veuillez réessayer.", Snackbar.LENGTH_LONG).show();

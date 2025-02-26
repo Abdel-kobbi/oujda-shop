@@ -64,6 +64,13 @@ public class MainActivity extends AppCompatActivity {
         // to display message if the list is empty
         listViewCategory.setEmptyView(findViewById(R.id.emptyListCategory));
         loadCategories();
+
+        listViewCategory.setOnItemClickListener((parent, view, position, id) -> {
+            Category category = categoryList.get(position);
+            Intent intent = new Intent(getApplicationContext(), ProductActivity.class);
+            intent.putExtra("category", category);
+            startActivity(intent);
+        });
     }
 
     private void loadCategories() {

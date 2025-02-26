@@ -11,6 +11,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.kobbi.oujdashop.Models.Category;
+import com.kobbi.oujdashop.Models.Product;
 import com.kobbi.oujdashop.Models.User;
 
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ public class Database extends SQLiteOpenHelper {
 
     private final String TABLE_USER = "users";
     private final String TABLE_CATEGORY = "categories";
+    private final String TABLE_PRODUCT = "products";
 
 
     public Database(@Nullable Context context) {
@@ -43,6 +45,14 @@ public class Database extends SQLiteOpenHelper {
                 "nom TEXT NOT NULL," +
                 "description TEXT NOT NULL);";
         db.execSQL(tableCategory);
+        String tableProduct = "CREATE TABLE IF NOT EXISTS " + TABLE_PRODUCT + " (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                "nom TEXT NOT NULL," +
+                "price REAL," +
+                "description TEXT NOT NULL," +
+                "category_id INTEGER," +
+                "FOREIGN KEY (category_id) REFERENCES " + TABLE_CATEGORY + "(id));";
+        db.execSQL(tableProduct);
     }
 
     @Override
@@ -50,6 +60,8 @@ public class Database extends SQLiteOpenHelper {
         String dropUser = "DROP TABLE IF EXISTS " + TABLE_USER;
         db.execSQL(dropUser);
         String dropCategory = "DROP TABLE IF EXISTS " + TABLE_CATEGORY;
+        db.execSQL(dropCategory);
+        String dropProduct = "DROP TABLE IF EXISTS " + TABLE_PRODUCT;
         db.execSQL(dropCategory);
         onCreate(db);
     }
@@ -178,5 +190,26 @@ public class Database extends SQLiteOpenHelper {
         } catch (SQLiteConstraintException e) {
             return false;
         }
+    }
+
+    public List<Product> getProductBuCategory(Category category) {
+        List<Product> products = new ArrayList<>();
+        try (SQLiteDatabase db = this.getReadableDatabase()) {
+            String sql = "SELECT * FROM " + TABLE_PRODUCT + " WHERE category_id = ?";
+            Cursor cursor = db.rawQuery(sql, new String[]{String.valueOf(category.getId())});
+            while (cursor.moveToNext()) {
+                products.add(new Product(
+                        cursor.getInt(0),
+                        cursor.getString(2),
+                        cursor.getDouble(1),
+                        cursor.getString(2),
+                        category
+                ));
+            }
+            cursor.close();
+        } catch (Exception e) {
+            Log.d("Error", Objects.requireNonNull(e.getMessage()));
+        }
+        return products;
     }
 }

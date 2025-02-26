@@ -30,11 +30,11 @@ public class CategoryAdapter extends ArrayAdapter<Category> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         convertView = LayoutInflater.from(context).inflate(resource, parent, false);
         TextView categoryName = (TextView) convertView.findViewById(R.id.title);
-        TextView categoryPhone = (TextView) convertView.findViewById(R.id.description);
+        TextView categoryDesc = (TextView) convertView.findViewById(R.id.description);
         Category currentCategory = getItem(position);
         String name = currentCategory.getName().substring(0,1).toUpperCase() + currentCategory.getName().substring(1).toLowerCase();
         categoryName.setText(name);
-        categoryPhone.setText(currentCategory.getDescription());
+        categoryDesc.setText(currentCategory.getDescription());
         return convertView;
     }
 }
