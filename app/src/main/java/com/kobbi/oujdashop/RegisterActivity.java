@@ -56,8 +56,8 @@ public class RegisterActivity extends AppCompatActivity {
 
     // function for validate editText and register new user
     private void singUp(View v) {
-        String nomValue = nom.getText().toString();
-        String prenomValue = prenom.getText().toString();
+        String nomValue = nom.getText().toString().trim();
+        String prenomValue = prenom.getText().toString().trim();
         String emailValue = email.getText().toString();
         String passwordValue = password.getText().toString();
         String confirmPasswordValue = confirmPassword.getText().toString();

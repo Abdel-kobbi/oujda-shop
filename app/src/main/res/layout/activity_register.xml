@@ -122,14 +122,26 @@
                 android:text="@string/password"
                 android:textSize="20sp" />
 
-            <EditText
-                android:id="@+id/password"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:autofillHints="password"
-                android:background="@drawable/input_style"
-                android:hint="@string/password"
-                android:inputType="textPassword" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                app:boxStrokeColor="@color/colorPrimary"
+                app:hintAnimationEnabled="false"
+                app:hintEnabled="false"
+                app:passwordToggleEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="password"
+                    android:background="@drawable/input_style"
+                    android:hint="@string/password"
+                    android:inputType="textPassword" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
         </LinearLayout>
 
         <LinearLayout
@@ -147,14 +159,25 @@
                 android:text="@string/confirmPassword"
                 android:textSize="20sp" />
 
-            <EditText
-                android:id="@+id/confirmPassword"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:autofillHints="password"
-                android:background="@drawable/input_style"
-                android:hint="@string/confirmPassword"
-                android:inputType="textPassword" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                app:boxStrokeColor="@color/colorPrimary"
+                app:hintAnimationEnabled="false"
+                app:hintEnabled="false"
+                app:passwordToggleEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/confirmPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="password"
+                    android:background="@drawable/input_style"
+                    android:hint="@string/confirmPassword"
+                    android:inputType="textPassword" />
+            </com.google.android.material.textfield.TextInputLayout>
+
         </LinearLayout>
 
         <LinearLayout

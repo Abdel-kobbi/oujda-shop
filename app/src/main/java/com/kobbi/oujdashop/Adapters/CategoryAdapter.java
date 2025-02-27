@@ -33,8 +33,7 @@ public class CategoryAdapter extends ArrayAdapter<Category> {
         TextView categoryName = (TextView) convertView.findViewById(R.id.title);
         TextView categoryDesc = (TextView) convertView.findViewById(R.id.description);
         Category currentCategory = getItem(position);
-        String name = currentCategory.getName().substring(0, 1).toUpperCase() + currentCategory.getName().substring(1).toLowerCase();
-        categoryName.setText(name);
+        categoryName.setText(currentCategory.getName());
         categoryDesc.setText(currentCategory.getDescription());
         return convertView;
     }

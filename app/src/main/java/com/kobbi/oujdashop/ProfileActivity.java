@@ -103,6 +103,8 @@ public class ProfileActivity extends AppCompatActivity {
             boolean isUpdated = db.updateUser(user);
             if (isUpdated) {
                 String userFullName = user.getNom().toUpperCase() + " " + user.getPrenom();
+                nom.setText(user.getNom());
+                prenom.setText(user.getPrenom());
                 fullName.setText(userFullName);
                 Snackbar.make(findViewById(R.id.profileLayout), "Votre profile a été modifier avec succès.", Snackbar.LENGTH_LONG).show();
             } else {

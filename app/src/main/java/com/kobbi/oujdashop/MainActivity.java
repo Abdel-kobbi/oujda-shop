@@ -135,6 +135,46 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // dialog for add new category
+    private void showAddCategoryDialog() {
+        AlertDialog.Builder builderAlert = new AlertDialog.Builder(new ContextThemeWrapper(this, androidx.appcompat.R.style.Theme_AppCompat_Dialog_Alert));
+        AlertDialog alertDialog = builderAlert.create();
+        alertDialog.setTitle("Ajouter catégorie");
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.add_category_layout, null);
+        alertDialog.setView(dialogView);
+
+        EditText categoryName = dialogView.findViewById(R.id.categoryName);
+        EditText categoryDesc = dialogView.findViewById(R.id.categoryDesc);
+
+        Button btnAdd = dialogView.findViewById(R.id.btnAdd);
+        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
+
+
+        btnAdd.setOnClickListener(v -> {
+            String name = categoryName.getText().toString();
+            String desc = categoryDesc.getText().toString();
+            if (name.isEmpty() || desc.isEmpty()) {
+                Toast.makeText(getApplicationContext(), "Tous les champs sont obligatoire!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            boolean isAdded = db.addCategory(new Category(name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase(), desc));
+            if (isAdded) {
+                alertDialog.dismiss();
+                Snackbar.make(findViewById(R.id.categoryLayout), "La catégorie '" + name + "' a été ajoutée avec succès.", Snackbar.LENGTH_LONG).show();
+                loadCategories();
+            } else {
+                Snackbar.make(findViewById(R.id.categoryLayout), "Échec de l'ajout, Veuillez réessayer.", Snackbar.LENGTH_LONG).show();
+            }
+        });
+
+        btnCancel.setOnClickListener(v -> {
+            alertDialog.dismiss();
+        });
+
+        alertDialog.show();
+    }
+
     // dialog for update category;
     private void showUpdateCategoryDialog(Category category) {
         AlertDialog.Builder builderAlert = new AlertDialog.Builder(new ContextThemeWrapper(this, androidx.appcompat.R.style.Theme_AppCompat_Dialog_Alert));
@@ -166,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             // update category
-            category.setName(name);
+            category.setName(name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase());
             category.setDescription(desc);
 
             boolean isUpdated = db.updateCategory(category);
@@ -208,45 +248,5 @@ public class MainActivity extends AppCompatActivity {
         alertBuilder.setNegativeButton("Annuler", (dialog, which) -> dialog.dismiss());
 
         alertBuilder.show();
-    }
-
-    // dialog for add new category
-    private void showAddCategoryDialog() {
-        AlertDialog.Builder builderAlert = new AlertDialog.Builder(new ContextThemeWrapper(this, androidx.appcompat.R.style.Theme_AppCompat_Dialog_Alert));
-        AlertDialog alertDialog = builderAlert.create();
-        alertDialog.setTitle("Ajouter catégorie");
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.add_category_layout, null);
-        alertDialog.setView(dialogView);
-
-        EditText categoryName = dialogView.findViewById(R.id.categoryName);
-        EditText categoryDesc = dialogView.findViewById(R.id.categoryDesc);
-
-        Button btnAdd = dialogView.findViewById(R.id.btnAdd);
-        Button btnCancel = dialogView.findViewById(R.id.btnCancel);
-
-
-        btnAdd.setOnClickListener(v -> {
-            String name = categoryName.getText().toString();
-            String desc = categoryDesc.getText().toString();
-            if (name.isEmpty() || desc.isEmpty()) {
-                Toast.makeText(getApplicationContext(), "Tous les champs sont obligatoire!", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            boolean isAdded = db.addCategory(new Category(name, desc));
-            if (isAdded) {
-                alertDialog.dismiss();
-                Snackbar.make(findViewById(R.id.categoryLayout), "La catégorie '" + name + "' a été ajoutée avec succès.", Snackbar.LENGTH_LONG).show();
-                loadCategories();
-            } else {
-                Snackbar.make(findViewById(R.id.categoryLayout), "Échec de l'ajout, Veuillez réessayer.", Snackbar.LENGTH_LONG).show();
-            }
-        });
-
-        btnCancel.setOnClickListener(v -> {
-            alertDialog.dismiss();
-        });
-
-        alertDialog.show();
     }
 }

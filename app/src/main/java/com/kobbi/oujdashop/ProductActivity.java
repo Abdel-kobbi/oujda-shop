@@ -81,7 +81,7 @@ public class ProductActivity extends AppCompatActivity {
 
         gridViewProduct.setOnItemClickListener((parent, view, position, id) -> {
             Product selectedProduct = products.get(position);
-            Intent intent = new Intent(getApplicationContext(), DetailsActivity.class);
+            Intent intent = new Intent(getApplicationContext(), ProductDetailsActivity.class);
             intent.putExtra("product", selectedProduct);
             startActivity(intent);
         });
