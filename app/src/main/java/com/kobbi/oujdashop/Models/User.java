@@ -2,14 +2,19 @@ package com.kobbi.oujdashop.Models;
 
 public class User {
     private int id;
-    private String nom, prenom, email, password;
+    private String nom;
+    private String prenom;
+    private String email;
+    private String password;
+    private byte[] image;
 
-    public User(int id, String nom, String prenom, String email, String password) {
+    public User(int id, String nom, String prenom, String email, String password, byte[] image) {
         this.id = id;
         this.nom = nom;
         this.prenom = prenom;
         this.email = email;
         this.password = password;
+        this.image = image;
     }
 
     public User(String nom, String prenom, String email, String password) {
@@ -53,5 +58,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 }

@@ -105,6 +105,7 @@ public class RegisterActivity extends AppCompatActivity {
     private void backToLogin(View v) {
         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
         startActivity(intent);
+        finish();
     }
 
     private void emptyForm() {

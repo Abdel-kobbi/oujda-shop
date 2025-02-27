@@ -1,8 +1,16 @@
 package com.kobbi.oujdashop;
 
+import static android.provider.MediaStore.Images.Media.getBitmap;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -10,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -25,6 +34,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.kobbi.oujdashop.Database.Database;
 import com.kobbi.oujdashop.Models.User;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Objects;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -36,6 +46,10 @@ public class ProfileActivity extends AppCompatActivity {
     private Database db;
 
     User user;
+
+    ImageView imageView;
+
+    Uri pathImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +71,7 @@ public class ProfileActivity extends AppCompatActivity {
         nom = findViewById(R.id.nom);
         prenom = findViewById(R.id.prenom);
         email = findViewById(R.id.email);
+        imageView = findViewById(R.id.profilePhoto);
 
         btnUpdate = findViewById(R.id.btnUpdate);
         btnChangePassword = findViewById(R.id.btnChangePassword);
@@ -79,9 +94,14 @@ public class ProfileActivity extends AppCompatActivity {
         nom.setText(user.getNom());
         prenom.setText(user.getPrenom());
         email.setText(user.getEmail());
+        if (user.getImage() != null) {
+            imageView.setImageBitmap(byteArrayToBitmap(user.getImage()));
+        }
 
         btnUpdate.setOnClickListener(this::updateUser);
         btnChangePassword.setOnClickListener(this::updatePassword);
+
+        imageView.setOnClickListener(v -> openGallery());
     }
 
     @Override
@@ -127,6 +147,10 @@ public class ProfileActivity extends AppCompatActivity {
 
             if (prenomValue.isEmpty()) {
                 throw new Exception("Veuillez entrer votre prénom.");
+            }
+
+            if (getRealPathFromURI(pathImage) != null) {
+                user.setImage(imageViewToByte(imageView));
             }
 
             user.setNom(nomValue);
@@ -206,4 +230,46 @@ public class ProfileActivity extends AppCompatActivity {
 
         alertDialog.show();
     }
+
+    private void openGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*"); // select just photos
+        startActivityForResult(intent, 100);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100 && resultCode == RESULT_OK && data != null) {
+            pathImage = data.getData();
+            imageView.setImageURI(pathImage);
+        }
+    }
+
+    // Convertir URI en chemin réel
+    private String getRealPathFromURI(Uri contentUri) {
+        String[] proj = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
+        if (cursor != null) {
+            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            String path = cursor.getString(columnIndex);
+            cursor.close();
+            return path;
+        }
+        return null;
+    }
+
+    private byte[] imageViewToByte(ImageView imageView) {
+        Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        return stream.toByteArray();
+    }
+
+    public Bitmap byteArrayToBitmap(byte[] imageBytes) {
+        return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+    }
+
+
 }

@@ -42,7 +42,8 @@ public class Database extends SQLiteOpenHelper {
                 "nom TEXT NOT NULL," +
                 "prenom TEXT NOT NULL," +
                 "email TEXT NOT NULL UNIQUE," +
-                "password TEXT NOT NULL);";
+                "password TEXT NOT NULL," +
+                "image BLOB);";
         db.execSQL(tableUser);
         // table categories
         String tableCategory = "CREATE TABLE IF NOT EXISTS " + TABLE_CATEGORY + " (" +
@@ -114,7 +115,8 @@ public class Database extends SQLiteOpenHelper {
                     result.getString(1),
                     result.getString(2),
                     result.getString(3),
-                    result.getString(4)
+                    result.getString(4),
+                    result.getBlob(5)
             );
         }
         result.close();
@@ -133,7 +135,8 @@ public class Database extends SQLiteOpenHelper {
                     result.getString(1),
                     result.getString(2),
                     result.getString(3),
-                    result.getString(4)
+                    result.getString(4),
+                    result.getBlob(5)
             );
         }
         result.close();
@@ -147,6 +150,7 @@ public class Database extends SQLiteOpenHelper {
             values.put("nom", user.getNom());
             values.put("prenom", user.getPrenom());
             values.put("password", user.getPassword());
+            values.put("image", user.getImage());
             db.update(TABLE_USER, values, "id = ?", new String[]{String.valueOf(user.getId())});
             return true;
         } catch (SQLiteConstraintException e) {
