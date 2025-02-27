@@ -1,5 +1,6 @@
 package com.kobbi.oujdashop.Database;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -23,6 +24,7 @@ public class Database extends SQLiteOpenHelper {
     private final String TABLE_USER = "users";
     private final String TABLE_CATEGORY = "categories";
     private final String TABLE_PRODUCT = "products";
+    private final String TABLE_FAVORITES = "favorites";
 
 
     public Database(@Nullable Context context) {
@@ -57,6 +59,14 @@ public class Database extends SQLiteOpenHelper {
                 "category_id INTEGER," +
                 "FOREIGN KEY (category_id) REFERENCES " + TABLE_CATEGORY + "(id));";
         db.execSQL(tableProduct);
+        // table products
+        String tableFavorites = "CREATE TABLE IF NOT EXISTS " + TABLE_FAVORITES + " (" +
+                "user_id INTEGER," +
+                "product_id INTEGER," +
+                "PRIMARY KEY(user_id, product_id)," +
+                "FOREIGN KEY (product_id) REFERENCES " + TABLE_PRODUCT + "(id)," +
+                "FOREIGN KEY (user_id) REFERENCES " + TABLE_USER + "(id));";
+        db.execSQL(tableFavorites);
     }
 
     @Override
@@ -67,6 +77,8 @@ public class Database extends SQLiteOpenHelper {
         db.execSQL(dropCategory);
         String dropProduct = "DROP TABLE IF EXISTS " + TABLE_PRODUCT;
         db.execSQL(dropProduct);
+        String dropFavorites = "DROP TABLE IF EXISTS " + TABLE_FAVORITES;
+        db.execSQL(dropFavorites);
         onCreate(db);
     }
 
@@ -251,5 +263,38 @@ public class Database extends SQLiteOpenHelper {
         } catch (SQLiteConstraintException e) {
             return false;
         }
+    }
+
+    public void addFavorites(int userId, int productId) {
+        try (SQLiteDatabase db = this.getWritableDatabase()) {
+            ContentValues values = new ContentValues();
+            values.put("user_id", userId);
+            values.put("product_id", productId);
+            db.insertOrThrow(TABLE_FAVORITES, null, values);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteFavorites(int userId, int productId) {
+        try (SQLiteDatabase db = this.getWritableDatabase()) {
+            db.delete(TABLE_FAVORITES, "user_id = ? AND product_id = ?", new String[]{String.valueOf(userId), String.valueOf(productId)});
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // method to check if the product is favorite to user
+    public boolean isFavorite(int userId, int productId) {
+        try (SQLiteDatabase db = this.getWritableDatabase()) {
+            String sql = "SELECT * FROM " + TABLE_FAVORITES + " WHERE user_id = ? AND product_id = ?;";
+            Cursor cursor = db.rawQuery(sql, new String[]{String.valueOf(userId), String.valueOf(productId)});
+            boolean result = cursor.getCount() == 1;
+            cursor.close();
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

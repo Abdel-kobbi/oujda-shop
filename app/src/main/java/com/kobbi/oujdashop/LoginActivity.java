@@ -66,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (rememberMe.isChecked()) {
                         sharedPreferences.edit().putBoolean("isLogin", true).apply();
                     }
-                    sharedPreferences.edit().putInt("id", user.getId()).apply();
+                    sharedPreferences.edit().putInt("user_id", user.getId()).apply();
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(intent);
                 } else {

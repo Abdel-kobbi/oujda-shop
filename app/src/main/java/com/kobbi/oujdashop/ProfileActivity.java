@@ -63,7 +63,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences("login", MODE_PRIVATE);
 
-        int idUser = sharedPreferences.getInt("id", 0);
+        int idUser = sharedPreferences.getInt("user_id", 0);
         user = db.findUser(idUser);
 
         if (idUser == 0 || user == null) {
