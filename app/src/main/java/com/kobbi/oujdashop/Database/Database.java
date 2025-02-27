@@ -230,4 +230,26 @@ public class Database extends SQLiteOpenHelper {
             return false;
         }
     }
+
+    public boolean updateProduct(Product product) {
+        try (SQLiteDatabase db = this.getWritableDatabase()) {
+            ContentValues values = new ContentValues();
+            values.put("nom", product.getName());
+            values.put("price", product.getPrice());
+            values.put("description", product.getDescription());
+            db.update(TABLE_PRODUCT, values, "id = ?", new String[]{String.valueOf(product.getId())});
+            return true;
+        } catch (SQLiteConstraintException e) {
+            return false;
+        }
+    }
+
+    public boolean deleteProduct(int id) {
+        try (SQLiteDatabase db = this.getWritableDatabase()) {
+            db.delete(TABLE_PRODUCT, "id = ?", new String[]{String.valueOf(id)});
+            return true;
+        } catch (SQLiteConstraintException e) {
+            return false;
+        }
+    }
 }

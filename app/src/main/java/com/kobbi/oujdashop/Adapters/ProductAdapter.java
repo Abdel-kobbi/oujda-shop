@@ -33,8 +33,7 @@ public class ProductAdapter extends ArrayAdapter<Product> {
         TextView productName = (TextView) convertView.findViewById(R.id.productName);
         TextView productPrice = (TextView) convertView.findViewById(R.id.productPrice);
         Product currentProduct = getItem(position);
-        String name = currentProduct.getName().substring(0, 1).toUpperCase() + currentProduct.getName().substring(1).toLowerCase();
-        productName.setText(name);
+        productName.setText(currentProduct.getName());
         productPrice.setText(String.format("%.2f DH", currentProduct.getPrice()));
         return convertView;
     }

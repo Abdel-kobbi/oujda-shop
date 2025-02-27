@@ -50,7 +50,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/productDesc"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="100dp"
             android:gravity="top"
             android:hint="@string/categoryDesc"
             android:inputType="textMultiLine" />

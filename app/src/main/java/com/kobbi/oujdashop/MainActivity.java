@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        getMenuInflater().inflate(R.menu.context_menu_category, menu);
+        getMenuInflater().inflate(R.menu.context_menu, menu);
     }
 
     @Override

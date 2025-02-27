@@ -18,9 +18,9 @@ import java.util.Objects;
 
 public class DetailsActivity extends AppCompatActivity {
 
-    TextView productName, productDesc, productPrice;
+    private TextView productName, productDesc, productPrice;
 
-    SwitchMaterial switchFavorite;
+    private SwitchMaterial switchFavorite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
