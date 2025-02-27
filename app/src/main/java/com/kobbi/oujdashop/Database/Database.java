@@ -1,6 +1,6 @@
 package com.kobbi.oujdashop.Database;
 
-import android.annotation.SuppressLint;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -296,5 +296,40 @@ public class Database extends SQLiteOpenHelper {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public List<Product> getAllFavoritesProduct(int userId) {
+        List<Product> products = new ArrayList<>();
+        try (SQLiteDatabase db = this.getWritableDatabase()) {
+            // get all products id
+            String sql = "SELECT product_id FROM " + TABLE_FAVORITES + " WHERE user_id = ?;";
+            Cursor cursor = db.rawQuery(sql, new String[]{String.valueOf(userId)});
+            List<Integer> productIds = new ArrayList<>();
+            while (cursor.moveToNext()) {
+                productIds.add(cursor.getInt(0));
+            }
+            cursor.close();
+            Object[] idsArray = productIds.toArray();
+            StringBuilder ids = new StringBuilder();
+            for (Object el : idsArray) {
+                ids.append(el);
+            }
+            // get all products favorites
+            String sql_products = "SELECT * FROM " + TABLE_PRODUCT + " WHERE id IN (?)";
+            Cursor cursorProducts = db.rawQuery(sql_products, new String[]{String.valueOf(ids)});
+            while (cursorProducts.moveToNext()) {
+                products.add(new Product(
+                        cursorProducts.getInt(0),
+                        cursorProducts.getString(1),
+                        cursorProducts.getDouble(2),
+                        cursorProducts.getString(3),
+                        null
+                ));
+            }
+            cursorProducts.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return products;
     }
 }

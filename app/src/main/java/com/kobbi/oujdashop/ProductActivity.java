@@ -109,6 +109,11 @@ public class ProductActivity extends AppCompatActivity {
             // show dialog to add new product
             showAddProductDialog();
             return true;
+        } else if (item.getItemId() == R.id.favorites) {
+            // navigate to favorites activity
+            Intent intent = new Intent(getApplicationContext(), FavoritesActivity.class);
+            startActivity(intent);
+            return true;
         } else if (item.getItemId() == R.id.profile) {
             // navigate to profile activity
             Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);

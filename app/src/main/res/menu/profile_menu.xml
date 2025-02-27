@@ -3,6 +3,11 @@
     <item
         android:id="@+id/listCategories"
         android:title="@string/listCategories" />
+
+    <item
+        android:id="@+id/favorites"
+        android:title="@string/favorites" />
+
     <item
         android:id="@+id/logout"
         android:title="@string/logout" />

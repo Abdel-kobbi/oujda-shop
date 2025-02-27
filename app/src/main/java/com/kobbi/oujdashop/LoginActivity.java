@@ -69,6 +69,7 @@ public class LoginActivity extends AppCompatActivity {
                     sharedPreferences.edit().putInt("user_id", user.getId()).apply();
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(intent);
+                    finish();
                 } else {
                     Snackbar.make(findViewById(R.id.loginActivity), "Email ou mot de passe incorrect.", Snackbar.LENGTH_LONG).show();
                 }

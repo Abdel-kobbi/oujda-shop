@@ -71,8 +71,8 @@ public class ProfileActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
-        // set inputs with user info
 
+        // set inputs with user info
         String userFullName = user.getNom().toUpperCase() + " " + user.getPrenom();
         fullName.setText(userFullName);
 
@@ -82,6 +82,38 @@ public class ProfileActivity extends AppCompatActivity {
 
         btnUpdate.setOnClickListener(this::updateUser);
         btnChangePassword.setOnClickListener(this::updatePassword);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.profile_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Intent intent;
+        if (item.getItemId() == R.id.listCategories) {
+            // navigate to category activity
+            intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
+            return true;
+        } else if (item.getItemId() == R.id.favorites) {
+            // navigate to favorites activity
+            intent = new Intent(getApplicationContext(), FavoritesActivity.class);
+            startActivity(intent);
+            return true;
+        } else if (item.getItemId() == R.id.logout) {
+            // logout and navigate to login activity
+            SharedPreferences sharedPreferences = getSharedPreferences("login", MODE_PRIVATE);
+            sharedPreferences.edit().clear().apply();
+            intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+            finish();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
     }
 
 
@@ -170,38 +202,8 @@ public class ProfileActivity extends AppCompatActivity {
 
         });
 
-        btnCancel.setOnClickListener(v -> {
-            alertDialog.dismiss();
-        });
+        btnCancel.setOnClickListener(v -> alertDialog.dismiss());
 
         alertDialog.show();
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.profile_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        Intent intent;
-        if (item.getItemId() == R.id.listCategories) {
-            // navigate to category activity
-            intent = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(intent);
-            return true;
-        } else if (item.getItemId() == R.id.logout) {
-            // logout and navigate to login activity
-            SharedPreferences sharedPreferences = getSharedPreferences("login", MODE_PRIVATE);
-            sharedPreferences.edit().clear().apply();
-            intent = new Intent(getApplicationContext(), LoginActivity.class);
-            startActivity(intent);
-            finish();
-            return true;
-        } else {
-            return super.onOptionsItemSelected(item);
-        }
-    }
-
 }

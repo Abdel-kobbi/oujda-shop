@@ -6,14 +6,17 @@
         android:icon="@drawable/btn_add"
         android:title="@string/add"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/favorites"
+        android:title="@string/favorites" />
+
     <item
         android:id="@+id/profile"
         android:icon="@drawable/profile"
-        android:title="@string/profile"
-        />
+        android:title="@string/profile" />
     <item
         android:id="@+id/logout"
-        android:title="@string/logout"
-        />
+        android:title="@string/logout" />
 
 </menu>
