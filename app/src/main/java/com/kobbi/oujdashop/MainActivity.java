@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Uri pathImage = null;
 
-    ImageButton categoryImg;
+    private ImageButton categoryImg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

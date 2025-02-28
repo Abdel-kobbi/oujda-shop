@@ -2,9 +2,12 @@ package com.kobbi.oujdashop;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -25,6 +28,8 @@ import java.util.Objects;
 public class ProductDetailsActivity extends AppCompatActivity {
 
     private TextView productName, productDesc, productPrice;
+
+    ImageView productImage;
 
     private SwitchMaterial switchFavorite;
 
@@ -50,6 +55,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         productName = findViewById(R.id.productName);
         productPrice = findViewById(R.id.productPrice);
         productDesc = findViewById(R.id.productDesc);
+        productImage = findViewById(R.id.productImage);
         switchFavorite = findViewById(R.id.addToFavorites);
 
         // get Product from intent
@@ -72,7 +78,13 @@ public class ProductDetailsActivity extends AppCompatActivity {
             productName.setText(product.getName());
             productPrice.setText(String.valueOf(product.getPrice()));
             productDesc.setText(product.getDescription());
+            Bitmap bitmap = loadImageFromStorage(product.getImage());
+            if (bitmap != null) {
+                productImage.setImageBitmap(bitmap);
+            }
+
             Objects.requireNonNull(getSupportActionBar()).setTitle(product.getName());
+
             switchFavorite.setChecked(db.isFavorite(user.getId(), product.getId()));
 
             // add change listener to add or delete favorite
@@ -84,7 +96,6 @@ public class ProductDetailsActivity extends AppCompatActivity {
                 }
             });
         }
-
     }
 
     @Override
@@ -116,5 +127,9 @@ public class ProductDetailsActivity extends AppCompatActivity {
         } else {
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    public Bitmap loadImageFromStorage(String path) {
+        return BitmapFactory.decodeFile(path);
     }
 }

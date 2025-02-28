@@ -4,7 +4,7 @@ public class User {
     private int id;
     private String nom;
     private String prenom;
-    private String email;
+    private final String email;
     private String password;
     private String image;
 
@@ -46,10 +46,6 @@ public class User {
 
     public String getEmail() {
         return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getPassword() {

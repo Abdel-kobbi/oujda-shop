@@ -2,7 +2,13 @@ package com.kobbi.oujdashop;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.ContextMenu;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -13,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -30,6 +37,10 @@ import com.kobbi.oujdashop.Database.Database;
 import com.kobbi.oujdashop.Models.Category;
 import com.kobbi.oujdashop.Models.Product;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -42,6 +53,10 @@ public class ProductActivity extends AppCompatActivity {
     private Category categoryProduct;
 
     private List<Product> products;
+
+    private Uri pathImage = null;
+
+    private ImageButton productImg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +73,6 @@ public class ProductActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Liste des produits");
-
 
         db = new Database(getApplicationContext());
 
@@ -72,6 +85,7 @@ public class ProductActivity extends AppCompatActivity {
 
         if (category != null) {
             categoryProduct = category;
+            Objects.requireNonNull(getSupportActionBar()).setTitle("Liste des produits-" + category.getName());
         } else {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
@@ -92,7 +106,7 @@ public class ProductActivity extends AppCompatActivity {
     }
 
     private void loadProduct() {
-        products = db.getProductBuCategory(categoryProduct);
+        products = db.getProductByCategory(categoryProduct);
         ProductAdapter adapter = new ProductAdapter(getApplicationContext(), R.layout.item_product, products);
         gridViewProduct.setAdapter(adapter);
     }
@@ -166,10 +180,12 @@ public class ProductActivity extends AppCompatActivity {
         EditText productName = dialogView.findViewById(R.id.productName);
         EditText productPrice = dialogView.findViewById(R.id.productPrice);
         EditText productDesc = dialogView.findViewById(R.id.productDesc);
+        productImg = dialogView.findViewById(R.id.productImg);
 
         Button btnAdd = dialogView.findViewById(R.id.btnAdd);
         Button btnCancel = dialogView.findViewById(R.id.btnCancel);
 
+        productImg.setOnClickListener(v -> openGallery());
 
         btnAdd.setOnClickListener(v -> {
             String name = productName.getText().toString().trim();
@@ -185,7 +201,20 @@ public class ProductActivity extends AppCompatActivity {
                 return;
             }
 
-            boolean isAdded = db.addProduct(new Product(name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase(), Double.parseDouble(price), desc, categoryProduct));
+            // get image from ImageButton and store it
+            Drawable drawable = productImg.getDrawable();
+            Bitmap bitmap = null;
+
+            if (drawable instanceof BitmapDrawable) {
+                bitmap = ((BitmapDrawable) drawable).getBitmap();
+            }
+
+            String path = "";
+            if (bitmap != null) {
+                path = saveImageToInternalStorage(bitmap, String.valueOf(new Date().getTime()).substring(5));
+            }
+
+            boolean isAdded = db.addProduct(new Product(name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase(), Double.parseDouble(price), desc, path, categoryProduct));
             if (isAdded) {
                 alertDialog.dismiss();
                 Snackbar.make(findViewById(R.id.productLayout), "La produit '" + name + "' a été ajoutée avec succès.", Snackbar.LENGTH_LONG).show();
@@ -212,6 +241,7 @@ public class ProductActivity extends AppCompatActivity {
         EditText productName = dialogView.findViewById(R.id.productName);
         EditText productPrice = dialogView.findViewById(R.id.productPrice);
         EditText productDesc = dialogView.findViewById(R.id.productDesc);
+        productImg = dialogView.findViewById(R.id.productImg);
 
         Button btnAdd = dialogView.findViewById(R.id.btnAdd);
         // change Value of btn
@@ -219,10 +249,17 @@ public class ProductActivity extends AppCompatActivity {
 
         Button btnCancel = dialogView.findViewById(R.id.btnCancel);
 
+        productImg.setOnClickListener(v -> openGallery());
+
         // add the old value
         productName.setText(product.getName());
         productPrice.setText(String.valueOf(product.getPrice()));
         productDesc.setText(product.getDescription());
+
+        Bitmap bitmapCategory = loadImageFromStorage(product.getImage());
+        if (bitmapCategory != null) {
+            productImg.setImageBitmap(bitmapCategory);
+        }
 
         btnAdd.setOnClickListener(v -> {
             String name = productName.getText().toString();
@@ -232,10 +269,25 @@ public class ProductActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Tous les champs sont obligatoire!", Toast.LENGTH_SHORT).show();
                 return;
             }
+
+            // get image from ImageButton and store it
+            Drawable drawable = productImg.getDrawable();
+            Bitmap bitmap = null;
+
+            if (drawable instanceof BitmapDrawable) {
+                bitmap = ((BitmapDrawable) drawable).getBitmap();
+            }
+
+            String path = "";
+            if (bitmap != null) {
+                path = saveImageToInternalStorage(bitmap, String.valueOf(new Date().getTime()).substring(5));
+            }
+
             // update product
             product.setName(name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase());
             product.setPrice(Double.parseDouble(price));
             product.setDescription(desc);
+            product.setImage(path);
 
             boolean isUpdated = db.updateProduct(product);
             if (isUpdated) {
@@ -284,4 +336,38 @@ public class ProductActivity extends AppCompatActivity {
             return false;
         }
     }
+
+    // to add img
+    private void openGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*"); // select just photos
+        startActivityForResult(intent, 100);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100 && resultCode == RESULT_OK && data != null) {
+            pathImage = data.getData();
+            productImg.setImageURI(pathImage);
+        }
+    }
+
+    public String saveImageToInternalStorage(Bitmap bitmap, String imageName) {
+        File directory = getApplicationContext().getFilesDir(); // Répertoire interne
+        File file = new File(directory, imageName + ".jpg");
+
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos); // Compression en JPEG
+            return file.getAbsolutePath(); // Retourne le chemin de l'image
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public Bitmap loadImageFromStorage(String path) {
+        return BitmapFactory.decodeFile(path);
+    }
+
 }

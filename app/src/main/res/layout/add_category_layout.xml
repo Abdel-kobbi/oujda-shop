@@ -51,7 +51,8 @@
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:contentDescription="@string/categoryImg"
-        android:src="@mipmap/add_img_round" />
+        android:scaleType="centerCrop"
+        android:src="@mipmap/add_img_foreground" />
 
 
     <!-- Boutons Annuler et Ajouter -->

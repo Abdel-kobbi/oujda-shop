@@ -31,4 +31,5 @@
     <string name="addToFavorites">Ajouter aux favoris</string>
     <string name="favorites">Favoris</string>
     <string name="categoryImg">Image de catégorie</string>
+    <string name="productImg">Image de produit</string>
 </resources>

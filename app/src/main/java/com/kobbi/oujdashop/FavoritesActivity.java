@@ -17,7 +17,6 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.kobbi.oujdashop.Adapters.ProductAdapter;
 import com.kobbi.oujdashop.Database.Database;
-import com.kobbi.oujdashop.Models.Category;
 import com.kobbi.oujdashop.Models.Product;
 
 import java.util.List;
@@ -28,8 +27,6 @@ public class FavoritesActivity extends AppCompatActivity {
     private GridView gridViewProduct;
 
     private Database db;
-
-    private Category categoryProduct;
 
     private List<Product> products;
 
@@ -66,7 +63,7 @@ public class FavoritesActivity extends AppCompatActivity {
     }
 
     private void loadProduct() {
-        products = db.getAllFavoritesProduct(userId);
+        products = db.getAllFavoritesProducts(userId);
         ProductAdapter adapter = new ProductAdapter(getApplicationContext(), R.layout.item_product, products);
         gridViewProduct.setAdapter(adapter);
     }

@@ -15,6 +15,7 @@
         android:layout_height="100dp"
         android:layout_marginBottom="10dp"
         android:contentDescription="@string/app_name"
+        android:scaleType="centerCrop"
         android:src="@mipmap/app_logo" />
 
     <TextView

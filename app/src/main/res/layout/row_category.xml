@@ -11,6 +11,7 @@
         android:layout_height="100dp"
         android:layout_marginEnd="10dp"
         android:contentDescription="@string/app_name"
+        android:scaleType="centerCrop"
         android:src="@mipmap/app_logo_round" />
 
     <LinearLayout

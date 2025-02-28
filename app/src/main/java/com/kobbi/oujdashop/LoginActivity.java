@@ -29,7 +29,6 @@ public class LoginActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
 
     private Database db;
-    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
