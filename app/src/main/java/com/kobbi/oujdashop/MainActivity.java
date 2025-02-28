@@ -3,7 +3,13 @@ package com.kobbi.oujdashop;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.ContextMenu;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -13,6 +19,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -30,6 +37,10 @@ import com.kobbi.oujdashop.Adapters.CategoryAdapter;
 import com.kobbi.oujdashop.Database.Database;
 import com.kobbi.oujdashop.Models.Category;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -40,6 +51,10 @@ public class MainActivity extends AppCompatActivity {
     private List<Category> categoryList;
 
     private Database db;
+
+    private Uri pathImage = null;
+
+    ImageButton categoryImg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,10 +166,12 @@ public class MainActivity extends AppCompatActivity {
 
         EditText categoryName = dialogView.findViewById(R.id.categoryName);
         EditText categoryDesc = dialogView.findViewById(R.id.categoryDesc);
+        categoryImg = dialogView.findViewById(R.id.categoryImg);
 
         Button btnAdd = dialogView.findViewById(R.id.btnAdd);
         Button btnCancel = dialogView.findViewById(R.id.btnCancel);
 
+        categoryImg.setOnClickListener(v -> openGallery());
 
         btnAdd.setOnClickListener(v -> {
             String name = categoryName.getText().toString();
@@ -163,7 +180,21 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Tous les champs sont obligatoire!", Toast.LENGTH_SHORT).show();
                 return;
             }
-            boolean isAdded = db.addCategory(new Category(name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase(), desc));
+
+            // get image from ImageButton and store it
+            Drawable drawable = categoryImg.getDrawable();
+            Bitmap bitmap = null;
+
+            if (drawable instanceof BitmapDrawable) {
+                bitmap = ((BitmapDrawable) drawable).getBitmap();
+            }
+
+            String path = "";
+            if (bitmap != null) {
+                path = saveImageToInternalStorage(bitmap, String.valueOf(new Date().getTime()).substring(5));
+            }
+
+            boolean isAdded = db.addCategory(new Category(name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase(), desc, path));
             if (isAdded) {
                 alertDialog.dismiss();
                 Snackbar.make(findViewById(R.id.categoryLayout), "La catégorie '" + name + "' a été ajoutée avec succès.", Snackbar.LENGTH_LONG).show();
@@ -191,6 +222,7 @@ public class MainActivity extends AppCompatActivity {
 
         EditText categoryName = dialogView.findViewById(R.id.categoryName);
         EditText categoryDesc = dialogView.findViewById(R.id.categoryDesc);
+        categoryImg = dialogView.findViewById(R.id.categoryImg);
 
         Button btnAdd = dialogView.findViewById(R.id.btnAdd);
         // change Value of btn
@@ -198,21 +230,40 @@ public class MainActivity extends AppCompatActivity {
 
         Button btnCancel = dialogView.findViewById(R.id.btnCancel);
 
-        // add the old value
+        categoryImg.setOnClickListener(v -> openGallery());
 
+        // add the old value
         categoryName.setText(category.getName());
         categoryDesc.setText(category.getDescription());
+        Bitmap bitmapCategory = loadImageFromStorage(category.getImage());
+        if (bitmapCategory != null) {
+            categoryImg.setImageBitmap(bitmapCategory);
+        }
 
         btnAdd.setOnClickListener(v -> {
-            String name = categoryName.getText().toString();
-            String desc = categoryDesc.getText().toString();
+            String name = categoryName.getText().toString().trim();
+            String desc = categoryDesc.getText().toString().trim();
             if (name.isEmpty() || desc.isEmpty()) {
                 Toast.makeText(getApplicationContext(), "Tous les champs sont obligatoire!", Toast.LENGTH_SHORT).show();
                 return;
             }
+            // get image from ImageButton and store it
+            Drawable drawable = categoryImg.getDrawable();
+            Bitmap bitmap = null;
+
+            if (drawable instanceof BitmapDrawable) {
+                bitmap = ((BitmapDrawable) drawable).getBitmap();
+            }
+
+            String path = "";
+            if (bitmap != null) {
+                path = saveImageToInternalStorage(bitmap, String.valueOf(new Date().getTime()).substring(5));
+            }
+
             // update category
             category.setName(name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase());
             category.setDescription(desc);
+            category.setImage(path);
 
             boolean isUpdated = db.updateCategory(category);
             if (isUpdated) {
@@ -254,4 +305,38 @@ public class MainActivity extends AppCompatActivity {
 
         alertBuilder.show();
     }
+
+    // to add img
+    private void openGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*"); // select just photos
+        startActivityForResult(intent, 100);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100 && resultCode == RESULT_OK && data != null) {
+            pathImage = data.getData();
+            categoryImg.setImageURI(pathImage);
+        }
+    }
+
+    public String saveImageToInternalStorage(Bitmap bitmap, String imageName) {
+        File directory = getApplicationContext().getFilesDir(); // Répertoire interne
+        File file = new File(directory, imageName + ".jpg");
+
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos); // Compression en JPEG
+            return file.getAbsolutePath(); // Retourne le chemin de l'image
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public Bitmap loadImageFromStorage(String path) {
+        return BitmapFactory.decodeFile(path);
+    }
+
 }

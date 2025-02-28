@@ -49,7 +49,8 @@ public class Database extends SQLiteOpenHelper {
         String tableCategory = "CREATE TABLE IF NOT EXISTS " + TABLE_CATEGORY + " (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "nom TEXT NOT NULL," +
-                "description TEXT NOT NULL);";
+                "description TEXT NOT NULL," +
+                "image TEXT);";
         db.execSQL(tableCategory);
         // table products
         String tableProduct = "CREATE TABLE IF NOT EXISTS " + TABLE_PRODUCT + " (" +
@@ -84,6 +85,7 @@ public class Database extends SQLiteOpenHelper {
     }
 
     // method to add new user
+
     /**
      * return true if the user is added
      * return false if email already exists
@@ -167,7 +169,8 @@ public class Database extends SQLiteOpenHelper {
                 listCategories.add(new Category(
                         categories.getInt(0),
                         categories.getString(1),
-                        categories.getString(2)
+                        categories.getString(2),
+                        categories.getString(3)
                 ));
             }
             categories.close();
@@ -183,6 +186,7 @@ public class Database extends SQLiteOpenHelper {
             ContentValues values = new ContentValues();
             values.put("nom", category.getName());
             values.put("description", category.getDescription());
+            values.put("image", category.getImage());
             db.insertOrThrow(TABLE_CATEGORY, null, values);
             return true;
         } catch (SQLiteConstraintException e) {
@@ -195,6 +199,7 @@ public class Database extends SQLiteOpenHelper {
             ContentValues values = new ContentValues();
             values.put("nom", category.getName());
             values.put("description", category.getDescription());
+            values.put("image", category.getImage());
             db.update(TABLE_CATEGORY, values, "id = ?", new String[]{String.valueOf(category.getId())});
             return true;
         } catch (SQLiteConstraintException e) {

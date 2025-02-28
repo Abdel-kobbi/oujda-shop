@@ -30,5 +30,5 @@
     <string name="productPrice">Prix : 00.00 DH</string>
     <string name="addToFavorites">Ajouter aux favoris</string>
     <string name="favorites">Favoris</string>
-    <string name="categoryImg">image de catégorie</string>
+    <string name="categoryImg">Image de catégorie</string>
 </resources>
