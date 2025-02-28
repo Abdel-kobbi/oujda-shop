@@ -1,13 +1,11 @@
 package com.kobbi.oujdashop;
 
-import static android.provider.MediaStore.Images.Media.getBitmap;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -18,7 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -34,7 +32,10 @@ import com.google.android.material.snackbar.Snackbar;
 import com.kobbi.oujdashop.Database.Database;
 import com.kobbi.oujdashop.Models.User;
 
-import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Date;
 import java.util.Objects;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -45,11 +46,11 @@ public class ProfileActivity extends AppCompatActivity {
 
     private Database db;
 
-    User user;
+    private User user;
 
-    ImageView imageView;
+    private ImageButton profilePhoto;
 
-    Uri pathImage;
+    private Uri pathImage = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +72,7 @@ public class ProfileActivity extends AppCompatActivity {
         nom = findViewById(R.id.nom);
         prenom = findViewById(R.id.prenom);
         email = findViewById(R.id.email);
-        imageView = findViewById(R.id.profilePhoto);
+        profilePhoto = findViewById(R.id.profilePhoto);
 
         btnUpdate = findViewById(R.id.btnUpdate);
         btnChangePassword = findViewById(R.id.btnChangePassword);
@@ -90,18 +91,22 @@ public class ProfileActivity extends AppCompatActivity {
         // set inputs with user info
         String userFullName = user.getNom().toUpperCase() + " " + user.getPrenom();
         fullName.setText(userFullName);
+        Objects.requireNonNull(getSupportActionBar()).setTitle(userFullName);
 
         nom.setText(user.getNom());
         prenom.setText(user.getPrenom());
         email.setText(user.getEmail());
-        if (user.getImage() != null) {
-            imageView.setImageBitmap(byteArrayToBitmap(user.getImage()));
+
+        Bitmap bitmap = loadImageFromStorage(user.getImage());
+
+        if (bitmap != null) {
+            profilePhoto.setImageBitmap(bitmap);
         }
 
         btnUpdate.setOnClickListener(this::updateUser);
         btnChangePassword.setOnClickListener(this::updatePassword);
 
-        imageView.setOnClickListener(v -> openGallery());
+        profilePhoto.setOnClickListener(v -> openGallery());
     }
 
     @Override
@@ -136,7 +141,6 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-
     private void updateUser(View view) {
         String nomValue = nom.getText().toString().trim();
         String prenomValue = prenom.getText().toString().trim();
@@ -149,12 +153,22 @@ public class ProfileActivity extends AppCompatActivity {
                 throw new Exception("Veuillez entrer votre prénom.");
             }
 
-            if (getRealPathFromURI(pathImage) != null) {
-                user.setImage(imageViewToByte(imageView));
+            // get image from ImageButton and store it
+            Drawable drawable = profilePhoto.getDrawable();
+            Bitmap bitmap = null;
+
+            if (drawable instanceof BitmapDrawable) {
+                bitmap = ((BitmapDrawable) drawable).getBitmap();
+            }
+
+            String path = "";
+            if (bitmap != null) {
+                path = saveImageToInternalStorage(bitmap, String.valueOf(new Date().getTime()).substring(5));
             }
 
             user.setNom(nomValue);
             user.setPrenom(prenomValue);
+            user.setImage(path);
 
             boolean isUpdated = db.updateUser(user);
             if (isUpdated) {
@@ -162,6 +176,7 @@ public class ProfileActivity extends AppCompatActivity {
                 nom.setText(user.getNom());
                 prenom.setText(user.getPrenom());
                 fullName.setText(userFullName);
+                Objects.requireNonNull(getSupportActionBar()).setTitle(userFullName);
                 Snackbar.make(findViewById(R.id.profileLayout), "Votre profile a été modifier avec succès.", Snackbar.LENGTH_LONG).show();
             } else {
                 Snackbar.make(findViewById(R.id.profileLayout), "Échec de modifier, Veuillez réessayer.", Snackbar.LENGTH_LONG).show();
@@ -242,33 +257,25 @@ public class ProfileActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 100 && resultCode == RESULT_OK && data != null) {
             pathImage = data.getData();
-            imageView.setImageURI(pathImage);
+            profilePhoto.setImageURI(pathImage);
         }
     }
 
-    // Convertir URI en chemin réel
-    private String getRealPathFromURI(Uri contentUri) {
-        String[] proj = {MediaStore.Images.Media.DATA};
-        Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
-        if (cursor != null) {
-            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            String path = cursor.getString(columnIndex);
-            cursor.close();
-            return path;
+    public String saveImageToInternalStorage(Bitmap bitmap, String imageName) {
+        File directory = getApplicationContext().getFilesDir(); // Répertoire interne
+        File file = new File(directory, imageName + ".jpg");
+
+        try (FileOutputStream fos = new FileOutputStream(file)) {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos); // Compression en JPEG
+            return file.getAbsolutePath(); // Retourne le chemin de l'image
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
-        return null;
     }
 
-    private byte[] imageViewToByte(ImageView imageView) {
-        Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        return stream.toByteArray();
-    }
-
-    public Bitmap byteArrayToBitmap(byte[] imageBytes) {
-        return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+    public Bitmap loadImageFromStorage(String path) {
+        return BitmapFactory.decodeFile(path);
     }
 
 

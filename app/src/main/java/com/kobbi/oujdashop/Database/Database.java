@@ -43,7 +43,7 @@ public class Database extends SQLiteOpenHelper {
                 "prenom TEXT NOT NULL," +
                 "email TEXT NOT NULL UNIQUE," +
                 "password TEXT NOT NULL," +
-                "image BLOB);";
+                "image TEXT);";
         db.execSQL(tableUser);
         // table categories
         String tableCategory = "CREATE TABLE IF NOT EXISTS " + TABLE_CATEGORY + " (" +
@@ -84,7 +84,6 @@ public class Database extends SQLiteOpenHelper {
     }
 
     // method to add new user
-
     /**
      * return true if the user is added
      * return false if email already exists
@@ -116,7 +115,7 @@ public class Database extends SQLiteOpenHelper {
                     result.getString(2),
                     result.getString(3),
                     result.getString(4),
-                    result.getBlob(5)
+                    result.getString(5)
             );
         }
         result.close();
@@ -136,7 +135,7 @@ public class Database extends SQLiteOpenHelper {
                     result.getString(2),
                     result.getString(3),
                     result.getString(4),
-                    result.getBlob(5)
+                    result.getString(5)
             );
         }
         result.close();

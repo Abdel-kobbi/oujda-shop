@@ -6,9 +6,9 @@ public class User {
     private String prenom;
     private String email;
     private String password;
-    private byte[] image;
+    private String image;
 
-    public User(int id, String nom, String prenom, String email, String password, byte[] image) {
+    public User(int id, String nom, String prenom, String email, String password, String image) {
         this.id = id;
         this.nom = nom;
         this.prenom = prenom;
@@ -60,11 +60,11 @@ public class User {
         this.password = password;
     }
 
-    public byte[] getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(byte[] image) {
+    public void setImage(String image) {
         this.image = image;
     }
 }

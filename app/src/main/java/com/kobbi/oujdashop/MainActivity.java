@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
             startActivity(intent);
             return true;
-        }else if (item.getItemId() == R.id.favorites) {
+        } else if (item.getItemId() == R.id.favorites) {
             // navigate to favorites activity
             Intent intent = new Intent(getApplicationContext(), FavoritesActivity.class);
             startActivity(intent);
