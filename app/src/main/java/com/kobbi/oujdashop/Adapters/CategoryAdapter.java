@@ -46,7 +46,7 @@ public class CategoryAdapter extends ArrayAdapter<Category> {
         return convertView;
     }
 
-    public Bitmap loadImageFromStorage(String path) {
+    private Bitmap loadImageFromStorage(String path) {
         return BitmapFactory.decodeFile(path);
     }
 }

@@ -41,4 +41,9 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation(libs.material.v1100)
+    implementation(libs.barcode.scanning)
+    implementation(libs.camera.core)
+    implementation(libs.camera.lifecycle)
+    implementation(libs.camera.view)
+    implementation(libs.camera.camera2)
 }

@@ -113,7 +113,7 @@ public class ProductActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
+        getMenuInflater().inflate(R.menu.product_menu, menu);
         return true;
     }
 
@@ -122,6 +122,10 @@ public class ProductActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.add) {
             // show dialog to add new product
             showAddProductDialog();
+            return true;
+        } else if (item.getItemId() == R.id.scanner) {
+            Intent intent = new Intent(getApplicationContext(), ScannerQRActivity.class);
+            startActivity(intent);
             return true;
         } else if (item.getItemId() == R.id.favorites) {
             // navigate to favorites activity
@@ -214,7 +218,7 @@ public class ProductActivity extends AppCompatActivity {
                 path = saveImageToInternalStorage(bitmap, String.valueOf(new Date().getTime()).substring(5));
             }
 
-            boolean isAdded = db.addProduct(new Product(name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase(), Double.parseDouble(price), desc, path, categoryProduct));
+            boolean isAdded = db.addProduct(new Product(name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase(), Double.parseDouble(price), desc, path, "", categoryProduct));
             if (isAdded) {
                 alertDialog.dismiss();
                 Snackbar.make(findViewById(R.id.productLayout), "La produit '" + name + "' a été ajoutée avec succès.", Snackbar.LENGTH_LONG).show();

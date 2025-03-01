@@ -59,6 +59,7 @@ public class Database extends SQLiteOpenHelper {
                 "price REAL NOT NULL," +
                 "description TEXT NOT NULL," +
                 "image TEXT," +
+                "qr_code TEXT," +
                 "category_id INTEGER," +
                 "FOREIGN KEY (category_id) REFERENCES " + TABLE_CATEGORY + "(id));";
         db.execSQL(tableProduct);
@@ -229,6 +230,7 @@ public class Database extends SQLiteOpenHelper {
                         cursor.getDouble(2),
                         cursor.getString(3),
                         cursor.getString(4),
+                        cursor.getString(5),
                         category
                 ));
             }
@@ -275,6 +277,29 @@ public class Database extends SQLiteOpenHelper {
         } catch (SQLiteConstraintException e) {
             return false;
         }
+    }
+
+    public Product getProductByQRCode(String qrCode) {
+        Product product = null;
+        try (SQLiteDatabase db = this.getReadableDatabase()) {
+            String sql = "SELECT * FROM " + TABLE_PRODUCT + " WHERE qr_code = ?";
+            Cursor cursor = db.rawQuery(sql, new String[]{qrCode});
+            while (cursor.moveToNext()) {
+                product = new Product(
+                        cursor.getInt(0),
+                        cursor.getString(1),
+                        cursor.getDouble(2),
+                        cursor.getString(3),
+                        cursor.getString(4),
+                        cursor.getString(5),
+                        null
+                );
+            }
+            cursor.close();
+        } catch (Exception e) {
+            Log.d("Error", Objects.requireNonNull(e.getMessage()));
+        }
+        return product;
     }
 
     public void addFavorites(int userId, int productId) {
@@ -340,43 +365,7 @@ public class Database extends SQLiteOpenHelper {
                         cursorProducts.getDouble(2),
                         cursorProducts.getString(3),
                         cursorProducts.getString(4),
-                        null
-                ));
-            }
-            cursorProducts.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return products;
-    }
-
-
-    public List<Product> getAllFavoritesProduct(int userId) {
-        List<Product> products = new ArrayList<>();
-        try (SQLiteDatabase db = this.getWritableDatabase()) {
-            // get all products id
-            String sql = "SELECT product_id FROM " + TABLE_FAVORITES + " WHERE user_id = ?;";
-            Cursor cursor = db.rawQuery(sql, new String[]{String.valueOf(userId)});
-            List<Integer> productIds = new ArrayList<>();
-            while (cursor.moveToNext()) {
-                productIds.add(cursor.getInt(0));
-            }
-            cursor.close();
-            Object[] idsArray = productIds.toArray();
-            StringBuilder ids = new StringBuilder();
-            for (Object el : idsArray) {
-                ids.append(el);
-            }
-            // get all products favorites
-            String sql_products = "SELECT * FROM " + TABLE_PRODUCT + " WHERE id IN (?)";
-            Cursor cursorProducts = db.rawQuery(sql_products, new String[]{String.valueOf(ids)});
-            while (cursorProducts.moveToNext()) {
-                products.add(new Product(
-                        cursorProducts.getInt(0),
-                        cursorProducts.getString(1),
-                        cursorProducts.getDouble(2),
-                        cursorProducts.getString(3),
-                        cursorProducts.getString(4),
+                        cursorProducts.getString(5),
                         null
                 ));
             }

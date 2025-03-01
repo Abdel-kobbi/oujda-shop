@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/add"
+        android:icon="@drawable/btn_add"
+        android:title="@string/add"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/scanner"
+        android:icon="@mipmap/qr_code"
+        android:title="@string/scanner"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/favorites"
+        android:title="@string/favorites" />
+
+    <item
+        android:id="@+id/profile"
+        android:icon="@drawable/profile"
+        android:title="@string/profile" />
+    <item
+        android:id="@+id/logout"
+        android:title="@string/logout" />
+
+</menu>
