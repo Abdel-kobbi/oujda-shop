@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.add) {
             showAddCategoryDialog();
             return true;
-        } else if (item.getItemId() == R.id.profile) {
+        }else if (item.getItemId() == R.id.profile) {
             // navigate to profile activity
             Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
             startActivity(intent);

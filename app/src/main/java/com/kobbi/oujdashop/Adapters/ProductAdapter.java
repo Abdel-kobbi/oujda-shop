@@ -46,7 +46,7 @@ public class ProductAdapter extends ArrayAdapter<Product> {
         return convertView;
     }
 
-    public Bitmap loadImageFromStorage(String path) {
+    private Bitmap loadImageFromStorage(String path) {
         return BitmapFactory.decodeFile(path);
     }
 }

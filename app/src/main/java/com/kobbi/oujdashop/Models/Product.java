@@ -4,24 +4,26 @@ import java.io.Serializable;
 
 public class Product implements Serializable {
     private int id;
-    private String name, description, image;
+    private String name, description, image, qrCode;
     private double price;
     private final Category category;
 
-    public Product(int id, String name, double price, String description, String image, Category category) {
+    public Product(int id, String name, double price, String description, String image, String qrCocde, Category category) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.description = description;
         this.image = image;
+        this.qrCode = qrCocde;
         this.category = category;
     }
 
-    public Product(String name, double price, String description, String image, Category category) {
+    public Product(String name, double price, String description, String image, String qrCocde, Category category) {
         this.name = name;
         this.price = price;
         this.description = description;
         this.image = image;
+        this.qrCode = qrCocde;
         this.category = category;
     }
 
@@ -63,5 +65,13 @@ public class Product implements Serializable {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getQrCode() {
+        return qrCode;
+    }
+
+    public void setQrCode(String qrCode) {
+        this.qrCode = qrCode;
     }
 }
