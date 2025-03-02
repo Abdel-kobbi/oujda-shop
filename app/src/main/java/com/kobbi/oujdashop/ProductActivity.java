@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -58,6 +59,8 @@ public class ProductActivity extends AppCompatActivity {
 
     private ImageButton productImg;
 
+    String codeScanner; // store value of code
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,24 +83,32 @@ public class ProductActivity extends AppCompatActivity {
 
         gridViewProduct.setEmptyView(findViewById(R.id.emptyListProduct));
 
+        Intent intent = getIntent();
         // get category product
-        Category category = (Category) getIntent().getSerializableExtra("category");
+        Category category = (Category) intent.getSerializableExtra("category");
 
         if (category != null) {
             categoryProduct = category;
             Objects.requireNonNull(getSupportActionBar()).setTitle("Liste des produits-" + category.getName());
         } else {
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(intent);
+            Intent intentGoToMain = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intentGoToMain);
+            finish();
+        }
+
+        // check if add new product from scanner
+        codeScanner = intent.getStringExtra("code");
+        if (codeScanner != null) {
+            showAddProductDialog();
         }
 
         loadProduct();
 
         gridViewProduct.setOnItemClickListener((parent, view, position, id) -> {
             Product selectedProduct = products.get(position);
-            Intent intent = new Intent(getApplicationContext(), ProductDetailsActivity.class);
-            intent.putExtra("product", selectedProduct);
-            startActivity(intent);
+            Intent intentGoToProductDetails = new Intent(getApplicationContext(), ProductDetailsActivity.class);
+            intentGoToProductDetails.putExtra("product", selectedProduct);
+            startActivity(intentGoToProductDetails);
         });
 
         // add context menu to grid view
@@ -125,6 +136,7 @@ public class ProductActivity extends AppCompatActivity {
             return true;
         } else if (item.getItemId() == R.id.scanner) {
             Intent intent = new Intent(getApplicationContext(), ScannerQRActivity.class);
+            intent.putExtra("category", categoryProduct);
             startActivity(intent);
             return true;
         } else if (item.getItemId() == R.id.favorites) {
@@ -185,11 +197,17 @@ public class ProductActivity extends AppCompatActivity {
         EditText productPrice = dialogView.findViewById(R.id.productPrice);
         EditText productDesc = dialogView.findViewById(R.id.productDesc);
         productImg = dialogView.findViewById(R.id.productImg);
+        // add the code if is scanner from Scanner activity
+        if (codeScanner != null) {
+            TextView productCodeScanner = dialogView.findViewById(R.id.codeScanner);
+            productCodeScanner.setText(codeScanner);
+        }
 
         Button btnAdd = dialogView.findViewById(R.id.btnAdd);
         Button btnCancel = dialogView.findViewById(R.id.btnCancel);
 
         productImg.setOnClickListener(v -> openGallery());
+
 
         btnAdd.setOnClickListener(v -> {
             String name = productName.getText().toString().trim();
@@ -218,7 +236,7 @@ public class ProductActivity extends AppCompatActivity {
                 path = saveImageToInternalStorage(bitmap, String.valueOf(new Date().getTime()).substring(5));
             }
 
-            boolean isAdded = db.addProduct(new Product(name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase(), Double.parseDouble(price), desc, path, "", categoryProduct));
+            boolean isAdded = db.addProduct(new Product(name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase(), Double.parseDouble(price), desc, path, codeScanner, categoryProduct));
             if (isAdded) {
                 alertDialog.dismiss();
                 Snackbar.make(findViewById(R.id.productLayout), "La produit '" + name + "' a été ajoutée avec succès.", Snackbar.LENGTH_LONG).show();

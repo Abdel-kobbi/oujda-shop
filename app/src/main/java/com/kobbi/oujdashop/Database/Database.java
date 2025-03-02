@@ -248,6 +248,7 @@ public class Database extends SQLiteOpenHelper {
             values.put("price", product.getPrice());
             values.put("description", product.getDescription());
             values.put("image", product.getImage());
+            values.put("qr_code", product.getQrCode());
             values.put("category_id", product.getCategory().getId());
             db.insertOrThrow(TABLE_PRODUCT, null, values);
             return true;

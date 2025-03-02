@@ -27,7 +27,7 @@ import java.util.Objects;
 
 public class ProductDetailsActivity extends AppCompatActivity {
 
-    private TextView productName, productDesc, productPrice;
+    private TextView productName, productDesc, productPrice, codeScanner;
 
     ImageView productImage;
 
@@ -57,6 +57,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         productDesc = findViewById(R.id.productDesc);
         productImage = findViewById(R.id.productImage);
         switchFavorite = findViewById(R.id.addToFavorites);
+        codeScanner = findViewById(R.id.codeScanner);
 
         // get Product from intent
         Intent intent = getIntent();
@@ -78,6 +79,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
             productName.setText(product.getName());
             productPrice.setText(String.valueOf(product.getPrice()));
             productDesc.setText(product.getDescription());
+            codeScanner.setText(product.getQrCode());
             Bitmap bitmap = loadImageFromStorage(product.getImage());
             if (bitmap != null) {
                 productImage.setImageBitmap(bitmap);

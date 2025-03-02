@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -12,6 +13,7 @@ import androidx.core.view.WindowInsetsCompat;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -30,6 +32,7 @@ import com.google.mlkit.vision.barcode.BarcodeScanning;
 import com.google.mlkit.vision.barcode.common.Barcode;
 import com.google.mlkit.vision.common.InputImage;
 import com.kobbi.oujdashop.Database.Database;
+import com.kobbi.oujdashop.Models.Category;
 import com.kobbi.oujdashop.Models.Product;
 
 import java.util.concurrent.ExecutionException;
@@ -44,6 +47,8 @@ public class ScannerQRActivity extends AppCompatActivity {
     private ExecutorService cameraExecutor;
 
     private Database db;
+
+    Category categoryProduct;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +71,17 @@ public class ScannerQRActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST_CODE);
         } else {
             ShowCamera();
+        }
+
+        // get category product
+        Category category = (Category) getIntent().getSerializableExtra("category");
+
+        if (category != null) {
+            categoryProduct = category;
+        } else {
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
+            finish();
         }
     }
 
@@ -119,9 +135,9 @@ public class ScannerQRActivity extends AppCompatActivity {
                                     startActivity(intent);
                                     finish();
                                 } else {
-                                    Toast.makeText(this, "Code scanné: " + value + " Aucun produit trouver", Toast.LENGTH_SHORT).show();
-
+                                    showAddNewProductDialog(value);
                                 }
+                                cameraExecutor.shutdown();
                             }
                         }
                     })
@@ -154,5 +170,31 @@ public class ScannerQRActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         cameraExecutor.shutdown();
+    }
+
+    private void showAddNewProductDialog(String code) {
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, androidx.appcompat.R.style.Theme_AppCompat_Dialog_Alert));
+
+        alertBuilder.setTitle("Ajouter produit");
+
+        alertBuilder.setMessage("Ce produit n'existe pas, vous devez l'ajouter ?");
+
+        alertBuilder.setPositiveButton("Oui", (dialog, which) -> {
+            Intent intent = new Intent(getApplicationContext(), ProductActivity.class);
+            intent.putExtra("code", code);
+            intent.putExtra("category", categoryProduct);
+            startActivity(intent);
+            finish();
+        });
+
+        alertBuilder.setNegativeButton("Non", (dialog, which) -> {
+            dialog.dismiss();
+            Intent intent = new Intent(getApplicationContext(), ProductActivity.class);
+            intent.putExtra("category", categoryProduct);
+            startActivity(intent);
+            finish();
+        });
+
+        alertBuilder.show();
     }
 }
